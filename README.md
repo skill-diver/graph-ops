@@ -1,23 +1,16 @@
-# Ofnil Graph Feature Platform
+# Graph-ops 
 
-[![slack](https://img.shields.io/badge/slack-ofnil-brightgreen?logo=slack)](https://join.slack.com/t/ofnil/shared_invite/zt-1j6d9k0bb-cwH_BfR_3CFJ68hf6BvKaw)
-
-> This project is under active development and we may break API compatibility in the future. We welcome contributions and community feedback.
-
-Ofnil is a graph feature platform, which creates, manages and serves graph features for graph machine learning.
+Graph-ops is a graph characterization platform that simplifies the process of connecting graph databases to graph machine learning.
 
 ## Features
 
-### Connect your graph database to graph machine learning
+### Seamless connection between graph databases and graph machine learning
 
-Currently, using Graph Neural Networks (GNNs) on graph databases (e.g., Neo4j) requires tedious work to prepare data to be consumed by GNN frameworks (e.g., DGL, PyG). Ofnil provides a unified graph feature definition and feature engineering pipeline, which can be used to connect your graph database effortlessly to downstream graph machine learning.
+Graph-ops provides a simplified set of graph feature definition and feature engineering processes, making it easy to prepare data from graph databases (e.g. Neo4j) to graph machine learning frameworks (e.g. DGL, PyG). By defining graph features, users can avoid writing complex data processing code and focus on business requirements for graph features and machine learning models.
 
-By defining and deploying your graph feature definition in Ofnil, you can save tremendous efforts of writing, maintaining and debugging the tedious data mapper, connector, dataloader, sampler, data pipeline code, etc. You also need not worry about the graph feature consistency, correctness, or different graph database infrastructure behaviors. Therefore, you can now simply focus on your graph feature definition and graph machine learning models that are needed by your business/applications.
-
-### Define graph features in an intuitive and declarative way
+### Define graph features in the easist way
 
 ```rust
-// The code below is for the purpose of demonstration only. You may refer to examples/quickstart/main.rs for executable code.
 
 let average_price = graph
     .aggregate_neighbors(Some(product_entity), reviewer_entity, vec!["price"], "mean")?
@@ -47,17 +40,11 @@ let item_prop = transform_graph
     .export(&redis_infra_id);
 ```
 
-## Upcoming Issues
+## Support
 
-- [ ] Real-time graph feature support for streaming graph update (with a unified consistent graph feature definition for both batch and streaming).
-- [ ] Graph feature Point-in-Time (PIT) correctness.
-- [ ] Advanced feature engineering pipeline analysis, e.g., data lineage, feature monitoring, feature discovery, etc.
-- [ ] Graph feature as a Service, hide difficult and tedious details of graph feature engineering and serving with just a few lines of graph feature definition.
-- [ ] ...
+Graph-ops supports real-time graph feature updates, ensures point-in-time correctness (PIT) of graph features, and enhances advanced analytics capabilities for feature engineering, such as data pedigree, feature monitoring and discovery. We are also working on simplifying graph feature engineering and services into a few lines of code of graph features-as-a-service to hide the complex and tedious details behind the scenes.
 
 ## Getting Started
 
-- [Contribution Guide](./CONTRIBUTING.md)
 - [Quickstart](./examples/quickstart/)
 - [Docs](./docs/)
-- [Ofnil Rust API Docs](https://rustdoc.ofnil.io/ofnil/)
