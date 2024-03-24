@@ -24,7 +24,7 @@ regex = "1.9.1"
 lazy_static = "1.4.0"
 toml = "0.8.0"
 dotenv = "0.15.0"
-redis = "0.23.0"
+redis = "0.25.2"
 pyo3 = { version = "0.20.0", features = ["extension-module"] }
 rand = { version = "0.8.5", optional = true }
 bb8-bolt = "0.8.0"
