@@ -1,6 +1,6 @@
-# Ofnil Quickstart
+# Graph-ops Quickstart
 
-This is a quickstart guide for Ofnil. It will help you get started with Ofnil.
+This is a quickstart guide for graph-ops.
 
 ## Table of Contents
 
@@ -28,12 +28,12 @@ Before starting, make sure you have installed
 
 #### 2. Build and start the Docker containers
 
-You will need to clone the Ofnil repository first:
+You will need to clone repository first:
 
 ```bash
 
-git clone https://github.com/ofnil/ofnil.git
-cd ofnil
+git clone https://github.com/skill-diver/graph-ops.git
+cd graph-ops
 tar -xzvf examples/quickstart/neo4j_env.tar.gz -C examples/quickstart/
 ```
 
@@ -53,14 +53,14 @@ Option 1: Command-line development (recommended for Vim users)
 
 ```bash
 
-docker exec -it ofnil-quickstart /bin/bash
+docker exec -it graph-ops-quickstart /bin/bash
 ```
 
 Option 2: Visual Studio Code development (recommended for VSCode users)
 
 1. Install the `Remote Development` extension in Visual Studio Code.
-2. Attach to the container `ofnil-quickstart` from Remote Explorer > Dev Containers.
-3. Open path `/ofnil` in the container from VSCode.
+2. Attach to the container `graph-ops-quickstart` from Remote Explorer > Dev Containers.
+3. Open path `/graph-ops` in the container from VSCode.
 
 > For Windows users, use the WSL2 backend as recommended when installing Docker.
 
@@ -79,11 +79,11 @@ processors=4
 
 ### Option 2: Install Manually
 
-The procedure for using Ofnil manually is as follows:
+The procedure for using graph-ops manually is as follows:
 
 1. Set up the infrastructure you want to use, e.g., Neo4j, Redis, etc.
 2. Define the graph features you want to use (i.e., `main.rs`), then deploy them (by executing `main.rs`).
-3. Enjoy all the features you defined and the subgraph sampler provided by Ofnil (i.e., `example.py`).
+3. Enjoy all the features you defined and the subgraph sampler provided by graph-ops (i.e., `example.py`).
 
 #### Prerequisites
 
@@ -103,19 +103,19 @@ To run the quickstart, you need to install the following tools:
 # cd to the root directory of the project
 cargo build
 maturin build
-pip install target/wheels/ofnil*.whl  # --force-reinstall if you want to update the package
+pip install target/wheels/graph-ops*.whl  # --force-reinstall if you want to update the package
 ```
 
 #### Configuration
 
-1. Start Neo4j, Etcd, Redis, and fill in their configurations (listening port and username/password if applicable) in `examples/quickstart/ofnil.toml` and `examples/quickstart/.env`. You can refer to the current `ofnil.toml` and `.env.example` for examples.
+1. Start Neo4j, Etcd, Redis, and fill in their configurations (listening port and username/password if applicable) in `examples/quickstart/graph-ops.toml` and `examples/quickstart/.env`.
 
 Currently supported `infra_type`:
 
 - neo4j
 - redis
 
-For each infra, you will need to give it a name (for registration) and its corresponding required connection info. For example, to add a Neo4j instance, append the following to the `ofnil.toml`:
+For each infra, you will need to give it a name (for registration) and its corresponding required connection info. For example, to add a Neo4j instance, append the following to the `graph-ops.toml`:
 
 ```toml
 
@@ -171,4 +171,4 @@ We provide a Python script `examples/quickstart/example.py` to demonstrate how t
 python example.py
 ```
 
-In this example, we provide a DataLoader to load graph features from Ofnil. For graph topology, it will sample a subgraph from the graph database. For graph features, it will fetch the features defined in Ofnil.
+In this example, we provide a DataLoader to load graph features from graph-ops. For graph topology, it will sample a subgraph from the graph database. For graph features, it will fetch the features defined in graph-ops.
