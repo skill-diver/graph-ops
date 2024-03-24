@@ -1,0 +1,40 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - dashboard/**
+  pull_request:
+    branches: [main]
+    paths:
+      - dashboard/**
+
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./dashboard
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js LTS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+      - run: corepack enable
+
+      - name: Setup ofnil-dashboard
+        run: |
+          yarn
+
+      - name: format and lint
+        run: |
+          yarn fmt-check
+          yarn lint
+
+      - name: build
+        run: yarn build

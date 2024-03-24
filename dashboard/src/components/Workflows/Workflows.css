@@ -1,0 +1,15 @@
+.workflow-drawer .ant-drawer-body {
+  padding-top: 0;
+}
+
+.workflow-editor-add .react-flow__pane {
+  cursor: crosshair;
+}
+
+textarea.markup-textarea {
+  background-color: transparent;
+  color: transparent;
+  caret-color: var(--theme-purple);
+  font-family: monospace;
+  resize: both;
+}

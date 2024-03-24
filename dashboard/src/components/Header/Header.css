@@ -1,0 +1,8 @@
+#header-nav {
+  display: flex;
+  vertical-align: middle;
+}
+
+.header-nav-right {
+  margin-left: auto;
+}

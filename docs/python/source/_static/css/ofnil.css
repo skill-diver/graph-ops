@@ -1,0 +1,20 @@
+/* enable automatic line wrapping in autosummary tables */
+.wy-table-responsive table td,
+.wy-table-responsive table th {
+    white-space: normal;
+}
+
+/* remove autosummary table borders */
+.wy-table-bordered-all,
+.rst-content table.docutils,
+.wy-table-bordered-all td,
+.rst-content table.docutils td {
+    border: none;
+}
+
+/* adjust content width for screen display */
+@media screen {
+    .wy-nav-content {
+        max-width: 1200px;
+    }
+}

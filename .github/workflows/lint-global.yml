@@ -1,0 +1,19 @@
+name: Lint global
+
+on:
+  pull_request:
+    paths:
+      - "**.md"
+      - ".github/workflows/lint-global.yaml"
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DavidAnson/markdownlint-cli2-action@v13
+        with:
+          command: config
+          globs: |
+            .github/.markdownlint.json
+            **/*.md

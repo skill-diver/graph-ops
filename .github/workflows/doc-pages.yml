@@ -1,0 +1,104 @@
+name: doc-pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**
+      - python/**
+      - docs/python/**
+      - .github/workflows/doc-pages.yml
+  workflow_dispatch:
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - src/**
+  #     - python/**
+  #     - docs/python/**
+  #     - .github/workflows/doc-pages.yml
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  # RUSTFLAGS: "-D warnings -W unreachable-pub"  # Disable for now, consider to re-enable it later.
+
+jobs:
+  doc_pages:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          activate-environment: ofnil
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+
+      - name: Cache Cargo # include pip cache for maturin, version is per **/Cargo.lock
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-rustdoc
+
+      - name: Maturin
+        run: |
+          pip install --upgrade maturin
+          maturin develop
+
+      - name: Install PyTorch
+        run: conda install pytorch==1.13 cpuonly -c pytorch
+      - name: Install DGL
+        run: conda install -c dglteam dgl
+      - name: Install PyG
+        run: conda install pyg -c pyg
+
+      - name: Install sphinx
+        run: |
+          pip install --upgrade sphinx
+          pip install --upgrade sphinx_rtd_theme
+
+      - name: Build Rustdoc Documentation
+        run: cargo doc --all --no-deps
+
+      - name: Build python sphinx Documentation # treat warning as error
+        run: |
+          pushd .
+          cd docs/python
+          make html
+          popd
+
+      - name: Organize pages
+        run: |
+          mv target/doc/ofnil target/doc/rust
+          cp -r docs/python/build/html target/doc/python
+
+      - name: Landing page
+        run: |
+          cp .github/docs-html/cover.html target/doc/index.html
+          cp .github/docs-html/cover.css target/doc/cover.css
+
+      - name: Deploy Docs
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        with:
+          deploy_key: ${{ secrets.OFNIL_DOCS_DEPLOY_KEY }}
+          external_repository: ofnil/ofnil-docs
+          publish_branch: main
+          publish_dir: ./target/doc
+          # force_orphan: true

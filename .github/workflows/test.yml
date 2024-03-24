@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - src/bin/backend/**
+      - dashboard/**
+      - docs/**
+      - "**.md"
+      - .github/**
+      - "!.github/workflows/test.yml"
+      - "examples/quickstart/docker-compose.yml"
+      - "Dockerfile*"
+      - ".dockerignore"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - src/bin/backend/**
+      - dashboard/**
+      - docs/**
+      - "**.md"
+      - .github/**
+      - "!.github/workflows/test.yml"
+      - "examples/quickstart/docker-compose.yml"
+      - "Dockerfile*"
+      - ".dockerignore"
+
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: "3.10"
+          activate-environment: ofnil
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler etcd
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.7.0
+        with:
+          redis-version: 7
+          redis-port: 6379
+
+      - name: Start Neo4j_1
+        env:
+          NEO4J_AUTH: neo4j/neo4j
+        run: |
+          docker run -d \
+            -p 7687:7687 \
+            --env NEO4JLABS_PLUGINS='["graph-data-science"]' \
+            --env NEO4J_AUTH=neo4j/ofnil \
+            neo4j:4.4.17
+          docker ps -a
+      - name: Start etcd
+        run: tmux new -d -s etcd 'etcd'
+
+      - name: Cache cargo # per **/Cargo.lock
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}-test-units
+
+      - name: Maturin
+        run: |
+          pip install --upgrade maturin
+          maturin develop
+
+      - name: Install pytest
+        run: conda install pytest
+
+      - name: Install PyTorch
+        run: conda install pytorch==1.13 cpuonly -c pytorch
+      - name: Install DGL
+        run: conda install -c dglteam dgl
+      - name: Install PyG
+        run: conda install pyg -c pyg
+
+      - name: Setup environment variables
+        run: mv examples/quickstart/.env.example examples/quickstart/.env
+
+      - name: Quickstart
+        run: OFNIL_HOME=examples/quickstart RUST_LOG=debug cargo run --example quickstart
+
+      - name: Unit Test
+        run: |
+          export REDIS_URI="redis://localhost:6379"
+          cargo test --workspace --no-fail-fast --all-features --locked
+      # - name: Setup tmate session
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3

@@ -1,0 +1,47 @@
+name: Lint Python
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - python/**
+      - examples/**/*.py
+      - .github/workflows/lint_python.yml
+      - docs/python/source/*.py
+
+jobs:
+  main:
+    timeout-minutes: 30
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ steps.get-date.outputs.date }}-lint-python
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install black
+          pip install blackdoc
+          pip install isort
+
+      - name: Lint Python
+        run: |
+          black --check python examples/**/*.py docs/python/source/*.py
+          blackdoc --check python examples/**/*.py docs/python/source/*.py
+          isort --check python examples/**/*.py examples/**/*.py docs/python/source/*.py

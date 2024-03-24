@@ -1,0 +1,16 @@
+project = "ofnil-quickstart"
+registry_endpoints = ["http://localhost:2379"]  # etcd endpoints
+
+[[infra]]
+name = "neo4j_1"
+infra_type = "neo4j"
+# properties with `env_` prefix means that the value will be read from environment variable (or `.env` file)
+env_uri = "NEO4J_1_URI"
+# properties without `env_` prefix means that the value will be directly read from this config file
+username = "neo4j"
+env_password = "NEO4J_1_PASSWORD"
+
+[[infra]]
+name = "redis"
+infra_type = "redis"
+env_uri = "REDIS_URI"

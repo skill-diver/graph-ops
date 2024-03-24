@@ -1,0 +1,13 @@
+#sidebar .ant-menu-inline .anticon,
+#sidebar .ant-menu-inline-collapsed .anticon {
+  font-size: 24px;
+}
+
+#sidebar .ant-menu-inline .ant-menu-item {
+  padding-inline-start: calc(50% - 16px);
+}
+
+#sidebar .ant-menu-inline-collapsed .ant-menu-item {
+  padding-inline-start: calc(50% - 16px);
+  padding-inline-end: calc(50% - 24px);
+}
